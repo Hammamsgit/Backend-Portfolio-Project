@@ -35,7 +35,7 @@ describe("app", () => {
         .get("/api/deadend")
         .expect(404)
         .then(({ body }) => {
-          return body.msg;
+          expect(body.msg).toBe("Route not found");
         });
     });
   });
@@ -56,7 +56,7 @@ describe("app", () => {
           });
         });
     });
-    test("status: 404, responds with path not found", () => {
+    test("status: 400, responds with invalid request", () => {
       return request(app)
         .get("/api/articles/9999")
         .expect(400)
@@ -69,7 +69,7 @@ describe("app", () => {
         .get("/api/deadend")
         .expect(404)
         .then(({ body }) => {
-          return body.msg;
+          expect(body.msg).toBe("Route not found");
         });
     });
   });
