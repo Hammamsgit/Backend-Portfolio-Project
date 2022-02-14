@@ -10,8 +10,8 @@ app.get("/api/topics", getTopics);
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Route not found" });
 });
-app.use(handlesCustomErrors);
-app.use(handlesPsqlErrors);
-app.use(handleServerErrors);
+// app.use(handlesCustomErrors);
+// app.use(handlesPsqlErrors);
+// app.use(handleServerErrors);
 
 module.exports = app;
