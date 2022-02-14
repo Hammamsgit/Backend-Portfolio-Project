@@ -12,7 +12,7 @@ app.get("/api/articles/:article_id", getArticlesById);
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Route not found" });
 });
-// app.use(handlesCustomErrors);
+app.use(handlesCustomErrors);
 // app.use(handlesPsqlErrors);
 // app.use(handleServerErrors);
 

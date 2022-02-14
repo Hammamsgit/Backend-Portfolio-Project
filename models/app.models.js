@@ -6,9 +6,12 @@ exports.fetchTopics = async () => {
 };
 
 exports.fetchArticleById = async (id) => {
-
-  
-  const result = await db.query(`SELECT * FROM articles WHERE article_id = $1;`,[id]);
-  return result.rows
+  const result = await db.query(
+    `SELECT * FROM articles WHERE article_id = $1;`,
+    [id]
+  );
+  if (result.rows.length < 1) {
+    return Promise.reject({ status: 400, msg: "BAD REQUEST" });
+  }
+  return result.rows;
 };
-

@@ -34,7 +34,9 @@ describe("app", () => {
       return request(app)
         .get("/api/deadend")
         .expect(404)
-        .then((result) => {});
+        .then(({ body }) => {
+          return body.msg;
+        });
     });
   });
   describe("GET /api/articles/:article_id", () => {
@@ -45,13 +47,29 @@ describe("app", () => {
         .then(({ body }) => {
           expect(body.articles[0]).toEqual({
             article_id: 3,
-            title: 'Eight pug gifs that remind me of mitch',
-            topic: 'mitch',
-            author: 'icellusedkars',
-            body: 'some gifs',
-            created_at: '2020-11-03T09:12:00.000Z',
-            votes: 0
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: 0,
           });
+        });
+    });
+    test("status: 404, responds with path not found", () => {
+      return request(app)
+        .get("/api/articles/9999")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("BAD REQUEST");
+        });
+    });
+    test("status: 404, responds with path not found", () => {
+      return request(app)
+        .get("/api/deadend")
+        .expect(404)
+        .then(({ body }) => {
+          return body.msg;
         });
     });
   });
