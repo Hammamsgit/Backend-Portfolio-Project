@@ -73,4 +73,41 @@ describe("app", () => {
         });
     });
   });
+  describe("PATCH /api/articles/:article_id", () => {
+    test("status:200, responds with the updated article", () => {
+      const updateVote = { inc_votes: 1 };
+      return request(app)
+        .patch("/api/articles/3")
+        .send(updateVote)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.article).toEqual({
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: 1,
+          });
+        });
+    });
+
+    test("status: 404, responds with not found", () => {
+      return request(app)
+        .patch("/api/articles/9999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found");
+        });
+    });
+    test("status: 400, responds with wrong format", () => {
+      return request(app)
+        .patch("/api/articles/vote")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("WRONG FORMAT");
+        });
+    });
+  });
 });
