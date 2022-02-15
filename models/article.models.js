@@ -28,3 +28,8 @@ exports.updateArticleById = async (id, update) => {
   }
   return article.rows[0];
 };
+
+exports.fetchArticles = async () => {
+  const article = await db.query("SELECT * FROM articles ORDER BY created_at desc;");
+  return article.rows;
+};
