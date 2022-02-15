@@ -2,7 +2,7 @@ const {
   fetchTopics,
   fetchArticleById,
   updateArticleById,
-} = require("../models/app.models");
+} = require("../models/article.models");
 
 exports.getTopics = (req, res, next) => {
   fetchTopics()
