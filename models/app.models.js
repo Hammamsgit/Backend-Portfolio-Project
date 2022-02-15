@@ -16,15 +16,15 @@ exports.fetchArticleById = async (id) => {
   return result.rows;
 };
 
-exports.updateArticleById = (id, update) => {
+exports.updateArticleById = async (id, update) => {
   const num = update.inc_votes;
 
-  return db
-    .query(
-      "UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;",
-      [num, id]
-    )
-    .then(({ rows }) => {
-      return rows[0];
-    });
+  const article = await db.query(
+    "UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;",
+    [num, id]
+  );
+  if (article.rows.length < 1) {
+    return Promise.reject({ status: 404, msg: "Article not found" });
+  }
+  return article.rows[0];
 };

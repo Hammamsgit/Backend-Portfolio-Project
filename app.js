@@ -14,8 +14,9 @@ app.patch("/api/articles/:article_id", patchArticlesById);
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Route not found" });
 });
-app.use(handlesCustomErrors);
+
 app.use(handlesPsqlErrors);
+app.use(handlesCustomErrors);
 app.use(handleServerErrors);
 
 module.exports = app;

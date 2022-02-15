@@ -81,7 +81,7 @@ describe("app", () => {
         .send(updateVote)
         .expect(201)
         .then(({ body }) => {
-          expect(body.articles).toEqual({
+          expect(body.article).toEqual({
             article_id: 3,
             title: "Eight pug gifs that remind me of mitch",
             topic: "mitch",
@@ -92,25 +92,18 @@ describe("app", () => {
           });
         });
     });
-    test("status: 404, responds with path not found", () => {
+
+    test("status: 404, responds with not found", () => {
       return request(app)
-        .patch("/api/deadend")
+        .patch("/api/articles/9999")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("Route not found");
-        });
-    });
-    test("status: 400, responds with invalid request", () => {
-      return request(app)
-        .get("/api/articles/9999")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("BAD REQUEST");
+          expect(body.msg).toBe("Article not found");
         });
     });
     test("status: 400, responds with wrong format", () => {
       return request(app)
-        .get("/api/articles/vote")
+        .patch("/api/articles/vote")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("WRONG FORMAT");
