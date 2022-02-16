@@ -133,7 +133,7 @@ describe("app", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    test("status: 400, responds with bad request when body is empty ", () => {
+    test("status: 400, responds with invalid input when body is empty ", () => {
       const updateVote = {};
       return request(app)
         .patch("/api/articles/3")
