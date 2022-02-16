@@ -4,6 +4,7 @@ const {
   updateArticleById,
   fetchArticles,
 } = require("../models/article.models");
+const { fetchCommentsByArticleId } = require("../models/comments.models");
 
 exports.getTopics = (req, res, next) => {
   fetchTopics()
@@ -15,8 +16,11 @@ exports.getTopics = (req, res, next) => {
 
 exports.getArticlesById = (req, res, next) => {
   const id = req.params.article_id;
-  fetchArticleById(id)
-    .then((articles) => {
+  Promise.all([fetchArticleById(id), fetchCommentsByArticleId(id)])
+    .then((result) => {
+      const articles = result[0];
+      const comments = result[1];
+      articles[0].comment_count = comments.length;
       res.status(200).send({ articles });
     })
     .catch(next);

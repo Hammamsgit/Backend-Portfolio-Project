@@ -53,6 +53,7 @@ describe("app", () => {
             body: "some gifs",
             created_at: "2020-11-03T09:12:00.000Z",
             votes: 0,
+            comment_count: 2
           });
         });
     });
@@ -92,9 +93,7 @@ describe("app", () => {
           });
         });
     });
-    //     TEST - What if the wrong data value is passed in with inc_votes - i.e. a string.
-    // TEST - What is the key is spelt wrong?
-    // TEST - extra keys on the object?
+
     test("status: 400, responds with Bad request when ggiven wrong data value i.e. string", () => {
       const updateVote = { inc_votes: "thIs is a string" };
       return request(app)
@@ -191,4 +190,5 @@ describe("app", () => {
         });
     });
   });
+
 });
