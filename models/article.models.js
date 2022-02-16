@@ -19,6 +19,9 @@ exports.fetchArticleById = async (id) => {
 
 exports.updateArticleById = (id, update) => {
   const num = update.inc_votes;
+  if (Object.keys(update).length > 1) {
+    return Promise.reject({ status: 400, msg: "Invalid input" });
+  }
 
   return db
     .query(
