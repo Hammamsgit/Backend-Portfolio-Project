@@ -47,15 +47,15 @@ describe("app", () => {
         .then(({ body }) => {
           expect(body.article).toEqual(
             expect.objectContaining({
-            article_id: 3,
-            title: "Eight pug gifs that remind me of mitch",
-            topic: "mitch",
-            author: "icellusedkars",
-            body: "some gifs",
-            created_at: "2020-11-03T09:12:00.000Z",
-            votes: 0,
-          })
-        )
+              article_id: 3,
+              title: "Eight pug gifs that remind me of mitch",
+              topic: "mitch",
+              author: "icellusedkars",
+              body: "some gifs",
+              created_at: "2020-11-03T09:12:00.000Z",
+              votes: 0,
+            })
+          );
         });
     });
     test("status:200, responds with correct article with additional comment count", () => {
@@ -257,6 +257,42 @@ describe("app", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Article not found");
+        });
+    });
+  });
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("status:201, responds with comment newly added to the database", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "this is a comment",
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment.body).toEqual("this is a comment");
+        });
+    });
+    test("status: 404, responds with article not found", () => {
+      return request(app)
+        .post("/api/articles/9999/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found");
+        });
+    });
+    test("status: 400, responds with invalid request when invalid user provided", () => {
+      const newComment = {
+        username: "SomeRandomUser",
+        body: "this is a comment",
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("invalid request");
         });
     });
   });
