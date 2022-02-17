@@ -7,7 +7,7 @@ exports.fetchTopics = () => {
 };
 
 exports.fetchArticleById = async (id) => {
-  const newQuery = `SELECT articles.*, COUNT(comment_id)::INT AS comment_count FROM articles JOIN comments ON comments.article_id=articles.article_id WHERE articles.article_id = $1 GROUP BY comments.article_id, articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes;`
+  const newQuery = `SELECT articles.*, COUNT(comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id=articles.article_id WHERE articles.article_id = $1 GROUP BY comments.article_id, articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes;`
   return db
     .query(
       newQuery
