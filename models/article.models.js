@@ -7,16 +7,18 @@ exports.fetchTopics = () => {
 };
 
 exports.fetchArticleById = async (id) => {
+  const newQuery = `SELECT articles.*, COUNT(comment_id)::INT AS comment_count FROM articles JOIN comments ON comments.article_id=articles.article_id WHERE articles.article_id = $1 GROUP BY comments.article_id, articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes;`
   return db
     .query(
-      `SELECT articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes, COUNT(comment_id)::INT AS comment_count FROM articles JOIN comments ON comments.article_id=articles.article_id WHERE articles.article_id = $1 GROUP BY comments.article_id, articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes;`,
+      newQuery
+      ,
       [id]
     )
     .then(({ rows }) => {
       if (rows.length < 1) {
         return Promise.reject({ status: 400, msg: "BAD REQUEST" });
       }
-      return rows;
+      return rows[0];
     });
 };
 

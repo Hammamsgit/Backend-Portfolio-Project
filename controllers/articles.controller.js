@@ -17,8 +17,8 @@ exports.getTopics = (req, res, next) => {
 exports.getArticlesById = (req, res, next) => {
   const id = req.params.article_id;
   fetchArticleById(id)
-    .then((articles) => {
-      res.status(200).send({ articles });
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch(next);
 };
