@@ -16,11 +16,9 @@ exports.getTopics = (req, res, next) => {
 
 exports.getArticlesById = (req, res, next) => {
   const id = req.params.article_id;
-  Promise.all([fetchArticleById(id), fetchCommentsByArticleId(id)])
-    .then((result) => {
-      const articles = result[0];
-      const comments = result[1];
-      articles[0].comment_count = comments.length;
+ fetchArticleById(id)
+    .then((articles) => {
+ 
       res.status(200).send({ articles });
     })
     .catch(next);
