@@ -5,12 +5,6 @@ exports.fetchTopics = () => {
     return rows;
   });
 };
-// author: expect.any(String),
-// title: expect.any(String),
-// article_id: expect.any(Number),
-// topic: expect.any(String),
-// created_at: expect.any(String),
-// votes: expect.any(Number),
 
 exports.fetchArticleById = async (id) => {
   return db
@@ -47,7 +41,9 @@ exports.updateArticleById = (id, update) => {
 
 exports.fetchArticles = () => {
   return db
-    .query("SELECT * FROM articles ORDER BY created_at desc;")
+    .query(
+      "SELECT articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes, COUNT(comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id=articles.article_id GROUP BY articles.article_id, articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes ORDER BY articles.created_at desc;"
+    )
     .then(({ rows }) => {
       return rows;
     });

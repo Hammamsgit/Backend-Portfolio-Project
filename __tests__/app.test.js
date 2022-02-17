@@ -193,6 +193,27 @@ describe("app", () => {
           });
         });
     });
+    test("status: 200, responds with an array of article objects with comment count", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toHaveLength(12);
+          body.articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
   });
   describe("GET /api/articles/:article_id/comments", () => {
     test("status:200, responds with an array of comments for relevant article id", () => {
