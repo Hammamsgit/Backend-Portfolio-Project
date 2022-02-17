@@ -7,7 +7,7 @@ exports.fetchTopics = () => {
 };
 
 exports.fetchArticleById = async (id) => {
-  const newQuery = `SELECT articles.*, COUNT(comment_id)::INT AS comment_count FROM articles JOIN comments ON comments.article_id=articles.article_id WHERE articles.article_id = $1 GROUP BY comments.article_id, articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes;`
+  const newQuery = `SELECT articles.*, COUNT(comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id=articles.article_id WHERE articles.article_id = $1 GROUP BY comments.article_id, articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes;`
   return db
     .query(
       newQuery
@@ -43,7 +43,9 @@ exports.updateArticleById = (id, update) => {
 
 exports.fetchArticles = () => {
   return db
-    .query("SELECT * FROM articles ORDER BY created_at desc;")
+    .query(
+      "SELECT articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes, COUNT(comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id=articles.article_id GROUP BY articles.article_id, articles.author, title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes ORDER BY articles.created_at desc;"
+    )
     .then(({ rows }) => {
       return rows;
     });

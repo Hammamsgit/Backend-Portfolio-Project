@@ -11,16 +11,16 @@ exports.fetchCommentsByArticleId = (id) => {
     });
 };
 
-exports.insertCommentByArticleId = (id,comment)=>{
-    console.log(comment, "IN MODEL");
-    const { username, body } = newComment;
+// exports.insertCommentByArticleId = (id,comment)=>{
+//     console.log(comment, "IN MODEL");
+//     const { username, body } = newComment;
   
-    return db
-      .query(
-        "INSERT INTO comments (username, body, article_id) VALUES ($1, $2, $3) RETURNING *;",
-        [username, body , id]
-      )
-      .then(({ rows }) => {
-        return rows[0];
-      });
-}
+//     return db
+//       .query(
+//         "INSERT INTO comments (username, body, article_id) VALUES ($1, $2, $3) RETURNING *;",
+//         [username, body , id]
+//       )
+//       .then(({ rows }) => {
+//         return rows[0];
+//       });
+// }
