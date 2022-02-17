@@ -1,4 +1,6 @@
+const format = require("pg-format");
 const db = require("../db/connection");
+const { doesArticleExist } = require("./article.models");
 
 exports.fetchCommentsByArticleId = (id) => {
   return db
@@ -11,16 +13,18 @@ exports.fetchCommentsByArticleId = (id) => {
     });
 };
 
-// exports.insertCommentByArticleId = (id,comment)=>{
-//     console.log(comment, "IN MODEL");
-//     const { username, body } = newComment;
-  
-//     return db
-//       .query(
-//         "INSERT INTO comments (username, body, article_id) VALUES ($1, $2, $3) RETURNING *;",
-//         [username, body , id]
-//       )
-//       .then(({ rows }) => {
-//         return rows[0];
-//       });
-// }
+exports.insertCommentByArticleId = (id, newComment) => {
+
+  const { username, body } = newComment;
+
+  return doesArticleExist(id).then(() => {
+    return db
+      .query(
+        "INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;",
+        [username, body, id]
+      )
+      .then(({ rows }) => {
+        return rows[0];
+      });
+  });
+};
