@@ -75,7 +75,7 @@ describe("app", () => {
   });
   describe("PATCH /api/articles/:article_id", () => {
     test("status:200, responds with the updated article", () => {
-      const updateVote = { inc_votes: 1 };
+      const updateVote = { inc_votes: "1" };
       return request(app)
         .patch("/api/articles/3")
         .send(updateVote)
@@ -92,7 +92,19 @@ describe("app", () => {
           });
         });
     });
-
+    //     TEST - What if the wrong data value is passed in with inc_votes - i.e. a string.
+    // TEST - What is the key is spelt wrong?
+    // TEST - extra keys on the object?
+    test("status: 400, responds with Bad request when given wrong data value i.e. string", () => {
+      const updateVote = { inc_votes: "thIs is a string" };
+      return request(app)
+        .patch("/api/articles/3")
+        .send(updateVote)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
     test("status: 404, responds with not found", () => {
       return request(app)
         .patch("/api/articles/9999")
@@ -101,12 +113,34 @@ describe("app", () => {
           expect(body.msg).toBe("Article not found");
         });
     });
-    test("status: 400, responds with wrong format", () => {
+    test("status: 400, responds with invalid input when wrong key input", () => {
+      const updateVote = { inc_votest: 1 };
       return request(app)
-        .patch("/api/articles/vote")
+        .patch("/api/articles/3")
+        .send(updateVote)
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("WRONG FORMAT");
+          expect(body.msg).toBe("invalid input");
+        });
+    });
+    test("status: 400, responds with invalid input when multiple keys input", () => {
+      const updateVote = { inc_votes: 1, author: "james" };
+      return request(app)
+        .patch("/api/articles/3")
+        .send(updateVote)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    test("status: 400, responds with bad request when body is empty ", () => {
+      const updateVote = {};
+      return request(app)
+        .patch("/api/articles/3")
+        .send(updateVote)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("invalid input");
         });
     });
   });
@@ -123,6 +157,38 @@ describe("app", () => {
                 username: expect.any(String),
               })
             );
+          });
+        });
+    });
+  });
+  describe("GET api/articles", () => {
+    test("status: 200, responds with an array of article objects", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toHaveLength(12);
+          body.articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("status:200, array of article objects sorted by date/descending order", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
           });
         });
     });
