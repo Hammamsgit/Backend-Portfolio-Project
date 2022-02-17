@@ -45,7 +45,8 @@ describe("app", () => {
         .get("/api/articles/3")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles[0]).toEqual({
+          expect(body.article).toEqual(
+            expect.objectContaining({
             article_id: 3,
             title: "Eight pug gifs that remind me of mitch",
             topic: "mitch",
@@ -53,7 +54,24 @@ describe("app", () => {
             body: "some gifs",
             created_at: "2020-11-03T09:12:00.000Z",
             votes: 0,
-            comment_count: 2
+          })
+        )
+        });
+    });
+    test("status:200, responds with correct article with additional comment count", () => {
+      return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toEqual({
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: 0,
+            comment_count: 2,
           });
         });
     });
@@ -93,9 +111,7 @@ describe("app", () => {
           });
         });
     });
-    //     TEST - What if the wrong data value is passed in with inc_votes - i.e. a string.
-    // TEST - What is the key is spelt wrong?
-    // TEST - extra keys on the object?
+
     test("status: 400, responds with Bad request when given wrong data value i.e. string", () => {
       const updateVote = { inc_votes: "thIs is a string" };
       return request(app)
@@ -194,5 +210,33 @@ describe("app", () => {
         });
     });
   });
-
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("status:200, responds with an array of comments for relevant article id", () => {
+      return request(app)
+        .get("/api/articles/3/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toHaveLength(2);
+          body.comments.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+    test("status: 400, responds with invalid request", () => {
+      return request(app)
+        .get("/api/articles/9999/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found");
+        });
+    });
+  });
 });
