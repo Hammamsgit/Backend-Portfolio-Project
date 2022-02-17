@@ -4,6 +4,7 @@ const {
   updateArticleById,
   fetchArticles,
 } = require("../models/article.models");
+const { fetchCommentsByArticleId } = require("../models/comments.models");
 
 exports.getTopics = (req, res, next) => {
   fetchTopics()
@@ -15,8 +16,9 @@ exports.getTopics = (req, res, next) => {
 
 exports.getArticlesById = (req, res, next) => {
   const id = req.params.article_id;
-  fetchArticleById(id)
+ fetchArticleById(id)
     .then((articles) => {
+ 
       res.status(200).send({ articles });
     })
     .catch(next);
