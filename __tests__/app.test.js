@@ -53,7 +53,7 @@ describe("app", () => {
             body: "some gifs",
             created_at: "2020-11-03T09:12:00.000Z",
             votes: 0,
-            comment_count: 2
+            comment_count: 2,
           });
         });
     });
@@ -194,5 +194,33 @@ describe("app", () => {
         });
     });
   });
-
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("status:200, responds with an array of comments for relevant article id", () => {
+      return request(app)
+        .get("/api/articles/3/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toHaveLength(2);
+          body.comments.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+    test("status: 400, responds with invalid request", () => {
+      return request(app)
+        .get("/api/articles/9999/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("BAD REQUEST");
+        });
+    });
+  });
 });
