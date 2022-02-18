@@ -20,9 +20,9 @@ app.use(express.json());
 /////////////////////////////TOPICS///////////////////////////////////////
 app.get("/api/topics", getTopics);
 /////////////////////////////ARTICLES/////////////////////////////////////
-app.get("/api/articles/:article_id/comments", getArticleCommentsById);
-app.get("/api/articles/:article_id", getArticlesById);
 app.get("/api/articles", getArticles);
+app.get("/api/articles/:article_id", getArticlesById);
+app.get("/api/articles/:article_id/comments", getArticleCommentsById);
 app.patch("/api/articles/:article_id", patchArticleById);
 app.post("/api/articles/:article_id/comments",postCommentByArticleId)
 //////////////////////////////USERS/////////////////////////////////////

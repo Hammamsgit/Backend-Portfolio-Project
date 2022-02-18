@@ -402,7 +402,11 @@ describe("app", () => {
   });
   describe("DELETE /api/comments/:comment_id", () => {
     test("status:204, no response", () => {
-      return request(app).delete("/api/comments/2").expect(204);
+      return request(app).delete("/api/comments/2").expect(204).then(()=>{
+        return db.query("SELECT * FROM comments WHERE comment_id = 2").then((response)=>{
+          expect(response.rows).toEqual([])
+        })
+      });
     });
     test('status 404, responds with comment not found ', () => {
       return request(app)
