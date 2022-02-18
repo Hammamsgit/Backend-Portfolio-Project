@@ -231,6 +231,110 @@ describe("app", () => {
         });
     });
   });
+  describe("GET api/articles?queries", () => {
+    test("status: 200, responds with an array of article objects sorted by title", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("title", {
+            descending: true,
+          });
+        });
+    });
+    test("status: 200, responds with an array of article objects sorted by article id", () => {
+      return request(app)
+        .get("/api/articles?sort_by=article_id")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("article_id", {
+            descending: true,
+          });
+        });
+    });
+    test("status: 200, responds with an array of article objects sorted by title ascending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("title", {
+            ascending: true,
+          });
+        });
+    });
+    test("status: 200, responds with an array of article objects for topics containing mitch", () => {
+        return request(app)
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then(({ body}) => {
+            expect(body.articles).toHaveLength(11);
+            expect(body.articles).toBeSortedBy("created_at", {
+              descending: true,
+            });
+            body.articles.forEach((article) => {
+              expect(article.topic).toBe("mitch")
+              expect(article).toEqual(
+                expect.objectContaining({
+                  author: expect.any(String),
+                  title: expect.any(String),
+                  article_id: expect.any(Number),
+                  topic: expect.any(String),
+                  created_at: expect.any(String),
+                  votes: expect.any(Number),
+                })
+              );
+            });
+          });
+    });
+    test("status: 200, responds with an array of article objects for topics containing cats", () => {
+        return request(app)
+          .get("/api/articles?topic=cats")
+          .expect(200)
+          .then(({ body}) => {
+            expect(body.articles).toHaveLength(1);
+            expect(body.articles).toBeSortedBy("created_at", {
+              descending: true,
+            });
+            body.articles.forEach((article) => {
+              expect(article.topic).toBe("cats")
+              expect(article).toEqual(
+                expect.objectContaining({
+                  author: expect.any(String),
+                  title: expect.any(String),
+                  article_id: expect.any(Number),
+                  topic: expect.any(String),
+                  created_at: expect.any(String),
+                  votes: expect.any(Number),
+                })
+              );
+            });
+          });
+    });
+    test("status: 400, responds with Invalid sort", () => {
+        return request(app)
+          .get("/api/articles?sort_by=randomColumnName")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid sort query");
+          });
+    });
+    test("status: 400, responds with Invalid order", () => {
+        return request(app)
+          .get("/api/articles?order=randomOrder")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid order query");
+          });
+    });
+    test("status: 404, responds with topic not found", () => {
+        return request(app)
+          .get("/api/articles?topic=randomTopicName")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Topic not found");
+          });
+    });
+  });
   describe("GET /api/articles/:article_id/comments", () => {
     test("status:200, responds with an array of comments for relevant article id", () => {
       return request(app)
