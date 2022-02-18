@@ -1,4 +1,3 @@
-const format = require("pg-format");
 const db = require("../db/connection");
 const { doesArticleExist } = require("./article.models");
 
@@ -14,7 +13,6 @@ exports.fetchCommentsByArticleId = (id) => {
 };
 
 exports.insertCommentByArticleId = (id, newComment) => {
-
   const { username, body } = newComment;
 
   return doesArticleExist(id).then(() => {
@@ -27,4 +25,24 @@ exports.insertCommentByArticleId = (id, newComment) => {
         return rows[0];
       });
   });
+};
+
+exports.removeCommentById = (id) => {
+  return db
+    .query("DELETE FROM comments WHERE comment_id = $1;", [id])
+    .then(() => {
+      return "Comment deleted";
+    });
+};
+exports.doesCommentExist = (id, next) => {
+  return db
+    .query("SELECT * FROM comments WHERE comment_id = $1;", [id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: `Comment not found` });
+      } else {
+        return rows;
+      }
+    })
+    .catch(next);
 };

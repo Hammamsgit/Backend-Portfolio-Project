@@ -400,4 +400,18 @@ describe("app", () => {
         });
     });
   });
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("status:204, no response", () => {
+      return request(app).delete("/api/comments/2").expect(204);
+    });
+    test('status 404, responds with comment not found ', () => {
+      return request(app)
+      .delete('/api/comments/9999')
+      .expect(404)
+      .then(({ body }) => {
+          expect(body.msg).toBe('Comment not found')
+      })
+    })
+  });
+  
 });
