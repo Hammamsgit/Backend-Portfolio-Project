@@ -91,7 +91,6 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
   ON comments.article_id = articles.article_id ${topicQuery} GROUP BY articles.article_id
   ORDER BY ${sort_by} ${order};`,queryValues)
     .then(({ rows }) => {
-      console.log(rows)
       if (rows.length < 1) {
         return Promise.reject({ status: 404, msg: `Topic not found` });
       }
