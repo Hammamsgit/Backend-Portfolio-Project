@@ -79,7 +79,7 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
   }
   let topicQuery = "";
 
-  if (topic != undefined) {
+  if (topic) {
     topicQuery = `WHERE articles.topic = $1`;
     queryValues.push(topic)
   }
