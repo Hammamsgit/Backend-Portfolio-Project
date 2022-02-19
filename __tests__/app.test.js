@@ -39,6 +39,15 @@ describe("app", () => {
         });
     });
   });
+  test('should ', () => {
+    return request(app)
+    .get("/api")
+    .expect(200)
+    .then(({ body }) => {
+      console.log(body)
+    
+  });
+});
   describe("GET /api/articles/:article_id", () => {
     test("status:200, responds with correct article", () => {
       return request(app)
