@@ -78,7 +78,7 @@ npm t
 this should perform all the tests included in this folder
 
 
-# Version
+# Version requirements
 
 this project was created using:
 
