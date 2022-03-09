@@ -15,8 +15,12 @@ exports.fetchCommentsByArticleId = (id) => {
 exports.insertCommentByArticleId = (id, newComment) => {
   const { username, body } = newComment;
   if( username && !body) {
-    return Promise.reject({ status: 400, msg: 'No comment has been made'})
+    return Promise.reject({ status: 400, msg: 'invalid body'})
 }
+if( body == {}) {
+  return Promise.reject({ status: 400, msg: 'No comment has been made'})
+}
+
   return doesArticleExist(id).then(() => {
     return db
       .query(
