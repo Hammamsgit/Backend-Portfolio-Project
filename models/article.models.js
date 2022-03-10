@@ -68,6 +68,7 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
     "body",
     "created_at",
     "votes",
+    "comment_count"
   ];
 
   if (!validColumns.includes(sort_by)) {
