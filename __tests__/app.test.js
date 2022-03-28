@@ -39,15 +39,7 @@ describe("app", () => {
         });
     });
   });
-  test('should ', () => {
-    return request(app)
-    .get("/api")
-    .expect(200)
-    .then(({ body }) => {
-      console.log(body)
-    
-  });
-});
+
   describe("GET /api/articles/:article_id", () => {
     test("status:200, responds with correct article", () => {
       return request(app)
@@ -86,10 +78,10 @@ describe("app", () => {
     });
     test("status: 400, responds with invalid request", () => {
       return request(app)
-        .get("/api/articles/9999")
+        .get("/api/articles/not-an-article-id")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("BAD REQUEST");
+          expect(body.msg).toBe("Bad Request");
         });
     });
     test("status: 404, responds with path not found", () => {
